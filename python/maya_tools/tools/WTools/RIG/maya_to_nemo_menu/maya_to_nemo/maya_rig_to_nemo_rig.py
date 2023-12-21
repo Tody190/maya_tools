@@ -6,4 +6,5 @@
 
 
 def ex():
+    print("-----")
     print("maya_rig_to_nemo_rig")

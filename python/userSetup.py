@@ -5,3 +5,7 @@
 # @File    : userSetup.py.py
 
 
+from maya_tools import startup
+
+
+startup.initialize()

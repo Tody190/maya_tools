@@ -10,6 +10,7 @@ authors = ['YangTao']
 
 requires = [
     'maya',
+    'nemo',
     '~maya_to_nemo_menu',
 ]
 
