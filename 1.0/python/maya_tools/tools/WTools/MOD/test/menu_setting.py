@@ -5,4 +5,4 @@
 # @File    : menu.py
 
 
-label = u"测试"
+menu_type = "menuItem"  # menu or submenu or menuItem

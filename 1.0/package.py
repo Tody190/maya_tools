@@ -15,9 +15,8 @@ requires = [
 
 
 def commands():
-    env.PYTHONPATH.append('{this.root}/maya_to_nemo_menu')
-    env.MAYA_SCRIPT_PATH.prepend('{this.root}/maya_to_nemo_menu')
-
+    env.PYTHONPATH.prepend('{this.root}/python')
+    env.MAYA_SCRIPT_PATH.prepend('{this.root}/python')
 
 
 uuid = 'maya_tools'

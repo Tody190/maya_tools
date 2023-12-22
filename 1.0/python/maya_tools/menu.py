@@ -18,42 +18,42 @@ import maya.cmds as cmds
 menu_path_root = os.path.dirname(__file__).replace("\\", "/") + "/tools"
 
 
-def execute(cmd_str):
-    import sys
-    import os
-    import importlib
-    import platform
-    if platform.python_version().split(".")[0] == "3":
-        reload = importlib.reload
-
-    # get menu_setting.py path
-    caller_frame = inspect.stack()[1][0]
-    caller_module = inspect.getmodule(caller_frame)
-    p = os.path.dirname(caller_module.__file__)
-    p = p.replace('\\', '/')
-
-    # add menu_setting.py path
-    p in sys.path or sys.path.append(p)
-    if p in sys.path:
-        sys.path.remove(p)
-
-    sys.path.insert(0, p)
-
-    if cmd_str.endswith('()'):  # moudle.ex()
-        modules = cmd_str.rsplit('.', 1)[0]
-        fun_name = cmd_str.rsplit('.', 1)[-1].replace("()", "")
-    else:
-        modules = cmd_str
-        fun_name = ""
-
-    # reload module
-    m = importlib.import_module(modules)
-    reload(m)
-
-    # execute fun
-    if fun_name:
-        func = getattr(m, fun_name)
-        func()
+# def execute(cmd_str):
+#     import sys
+#     import os
+#     import importlib
+#     import platform
+#     if platform.python_version().split(".")[0] == "3":
+#         reload = importlib.reload
+#
+#     # get menu_setting.py path
+#     caller_frame = inspect.stack()[1][0]
+#     caller_module = inspect.getmodule(caller_frame)
+#     p = os.path.dirname(caller_module.__file__)
+#     p = p.replace('\\', '/')
+#
+#     # add menu_setting.py path
+#     p in sys.path or sys.path.append(p)
+#     if p in sys.path:
+#         sys.path.remove(p)
+#
+#     sys.path.insert(0, p)
+#
+#     if cmd_str.endswith('()'):  # moudle.ex()
+#         modules = cmd_str.rsplit('.', 1)[0]
+#         fun_name = cmd_str.rsplit('.', 1)[-1].replace('()', '')
+#     else:
+#         modules = cmd_str
+#         fun_name = ""
+#
+#     # reload module
+#     m = importlib.import_module(modules)
+#     reload(m)
+#
+#     # execute fun
+#     if fun_name:
+#         func = getattr(m, fun_name)
+#         func()
 
 
 class MenuObject(object):
@@ -61,16 +61,23 @@ class MenuObject(object):
         # default setting
         self.menu_parent = menu_parent
         self.menu_path = menu_path.replace("\\", "/")
+        self._root_path = "maya_tools/tools/"
+        self.this_module_str = self.menu_path.rsplit(self._root_path, 1)[-1]
+        self.this_module_str = (self._root_path + self.this_module_str).replace("/", ".")
 
-        self.menu_module = None
+        # reload module
+        menu_module = importlib.import_module(self.this_module_str)
+        reload(menu_module)
+
+        self.menu_setting_module = None
         self.load_menu_module()
 
-        obj_name = os.path.basename(menu_path).replace("_", "")
-        self.object_name = "{}_{}".format(menu_parent, obj_name)
+        _obj_name = os.path.basename(menu_path).replace("_", "")
+        self.object_name = "{}_{}".format(menu_parent, _obj_name)
 
-        self.label = self.__get_attr("label") or os.path.basename(menu_path)
+        self.label = self.__get_menu_setting_attr("label") or os.path.basename(menu_path)
 
-        self.menu_type = self.__get_attr("menu_type")
+        self.menu_type = self.__get_menu_setting_attr("menu_type")
 
         if self.menu_type == "menu":
             self.menu_parent = "MayaWindow"
@@ -81,32 +88,26 @@ class MenuObject(object):
             else:
                 self.menu_type = "subMenu"
 
-        self.tearOff = self.__get_attr("tearOff") or True
+        self.tearOff = self.__get_menu_setting_attr("tearOff") or True
 
-        if self.menu_module:
-            # add fun to module
-            setattr(self.menu_module, "easy_command", execute)
+        self.command = self.__get_menu_setting_attr("command") or None
 
-
-    def __get_attr(self, attr_name):
-        if not self.menu_module:
+    def __get_menu_setting_attr(self, attr_name):
+        if not self.menu_setting_module:
             return None
         else:
-            if hasattr(self.menu_module, attr_name):
-                return getattr(self.menu_module, attr_name)
+            if hasattr(self.menu_setting_module, attr_name):
+                return getattr(self.menu_setting_module, attr_name)
             else:
                 return None
-
 
     def load_menu_module(self):
         # import menu.py in the dir
         for f in os.listdir(self.menu_path):
             if f == "menu_setting.py":
                 # ../maya_tools/tools/WTools/ANI --> maya_tools.tools.WTools.ANI.menu
-                module_name ="tools.{}.menu_setting".format(self.menu_path.split("/{}/".format("tools"), 1)[-1].replace("/", "."))
-
-                self.menu_module = importlib.import_module(module_name)
-                reload(self.menu_module)
+                self.menu_setting_module = importlib.import_module(self.this_module_str + ".menu_setting")
+                reload(self.menu_setting_module)
 
     def create_menu(self):
         # rebuild the main menu
@@ -115,31 +116,37 @@ class MenuObject(object):
 
         if self.menu_type == "menu":
             cmds.menu(self.object_name,
-                    label=self.label,
-                    parent=self.menu_parent,
-                    tearOff=self.tearOff)
+                      label=self.label,
+                      parent=self.menu_parent,
+                      tearOff=self.tearOff)
 
         elif self.menu_type == "subMenu":
             cmds.menuItem(self.object_name,
-                        subMenu=True,
-                        label=self.label,
-                        parent=self.menu_parent,
-                        tearOff=self.tearOff)
+                          subMenu=True,
+                          label=self.label,
+                          parent=self.menu_parent,
+                          tearOff=self.tearOff)
 
         elif self.menu_type == "menuItem":
             # ../maya_tools/tools/WTools/ANI --> maya_tools.tools.WTools.ANI.menu
-            module_name = "tools.{}.menu_setting".format(
-                self.menu_path.split("/{}/".format("tools"), 1)[-1].replace("/", "."))
+            cmd = 'print(u"There is no command set for [%s]")' % self.label
 
-            cmd = "import {};reload({});{}.commands()".format(module_name,
-                                                              module_name,
-                                                              module_name)
+            if self.command:
+                if self.command.startswith("{this_module}"):
+                    self.command = self.command.format(this_module=self.this_module_str)
+
+                parent_module = self.command.rsplit(".", 1)[0]
+                exec_module = self.command.rsplit(".", 1)[-1]
+
+                cmd = "import {};reload({});{}".format(parent_module,
+                                                       parent_module,
+                                                       parent_module + "." + exec_module)
 
             cmds.menuItem(self.object_name,
-                        label=self.label,
-                        parent=self.menu_parent,
-                        tearOff=self.tearOff,
-                        command=cmd)
+                          label=self.label,
+                          parent=self.menu_parent,
+                          tearOff=self.tearOff,
+                          command=cmd)
 
 
 def build_menu(menu_path=menu_path_root,

@@ -1,5 +1,5 @@
-#!/usr/bin/env maya_to_nemo_menu
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2023/12/20 13:44
+# @Time    : 2023/12/22 10:38
 # @Author  : YangTao
 # @File    : __init__.py
