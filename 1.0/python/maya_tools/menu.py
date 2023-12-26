@@ -72,8 +72,8 @@ class MenuObject(object):
         self.menu_setting_module = None
         self.load_menu_module()
 
-        _obj_name = os.path.basename(menu_path).replace("_", "")
-        self.object_name = "{}_{}".format(menu_parent, _obj_name)
+        self.pure_obj_name = os.path.basename(menu_path).replace("_", "")
+        self.object_name = "{}_{}".format(menu_parent, self.pure_obj_name)
 
         self.label = self.__get_menu_setting_attr("label") or os.path.basename(menu_path)
 
@@ -149,12 +149,21 @@ class MenuObject(object):
                           command=cmd)
 
 
+def reload_menu():
+    import maya_tools.utils.reset_session_for_script as reset_session_for_script
+    reload(reset_session_for_script)
+    reset_session_for_script.reset(root_path=menu_path_root)
+
+
 def build_menu(menu_path=menu_path_root,
                menu_parent="MayaWindow"):
     """
     build maya menu
     :return:
     """
+    reload_menu()
+
+    # menu_obj = None
     for f in os.listdir(menu_path):
         if f.startswith("__"):  # ignore __init__, __pycache__
             continue
@@ -168,3 +177,13 @@ def build_menu(menu_path=menu_path_root,
             if menu_obj.menu_type != "menuItem":
                 build_menu(menu_path=f_path,
                            menu_parent=menu_obj.object_name)
+    # if menu_obj:
+    #     # build reload btn
+    #     if menu_parent == 'MayaWindow':
+    #         cmd = "import maya_tools.utils.reset_session_for_script as reset_session_for_script;"
+    #         cmd += "reload(reset_session_for_script); reset_session_for_script.reset()"
+    #         cmds.menuItem(menu_obj.object_name + '_reload',
+    #                       label=u'重置菜单',
+    #                       parent=menu_obj.object_name,
+    #                       command=cmd)
+    #

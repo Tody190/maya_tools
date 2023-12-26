@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/maya_tools.iml" filepath="$PROJECT_DIR$/.idea/maya_tools.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../python/Tools/rez/third_plugins/nemo/dev/Nemo/scripts/.idea/scripts.iml" filepath="$PROJECT_DIR$/../../../python/Tools/rez/third_plugins/nemo/dev/Nemo/scripts/.idea/scripts.iml" />
     </modules>
   </component>
 </project>
