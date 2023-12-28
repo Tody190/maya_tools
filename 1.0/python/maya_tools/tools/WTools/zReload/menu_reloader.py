@@ -10,5 +10,5 @@ if platform.python_version().split(".")[0] == "3":
 def reload_menu():
     from maya_tools import menu
     reload(menu)
-    menu.reload_menu()
+    menu.build_menu()
     print("Menu has been reload !!!")

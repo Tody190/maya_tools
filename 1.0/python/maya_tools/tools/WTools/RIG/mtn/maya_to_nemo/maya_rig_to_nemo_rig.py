@@ -55,7 +55,8 @@ class RigAssetInfo:
         # Z:\cgteamwork7\P5\asset_work\Character\C002_A_00\rig\lo\ok\P5_C001_A_00_hi_rig.mb
         # Z:\cgteamwork7\P5\asset\Character\C001_A_00\rig\P5_C001_A_00_hi_rig.mb
         dir_path = os.path.dirname(self.maya_file_path)
-        return dir_path.replace('/rig/', '/rig_nemo/')
+        return dir_path.replace('/{}/rig'.format(self.entity_name),
+                                '/{}/rig_nemo'.format(self.entity_name))
 
     @property
     def nemo_rig_file(self):

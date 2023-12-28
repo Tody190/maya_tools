@@ -9,6 +9,7 @@ import json
 import time
 import shutil
 import re
+import os
 import traceback
 import sys
 
@@ -17,8 +18,8 @@ def go(graph_json, binary_zip_folder):
     print('\n--------------NEMO FARM--------------\n')
     url = "https://www.nemopuppet.com/api"
     message = {
-        'username': 'toddyyoung',
-        'password': 'NP#yt@10',
+        'username': os.environ.get('NEMO_FARM_USERNAME'),
+        'password': os.environ.get('NEMO_FARM_PASSWORD'),
     }
 
     print(u'正在登陆到 %s\n' % url)
@@ -43,14 +44,15 @@ def go(graph_json, binary_zip_folder):
             break
 
     if task_status == 'Success':
-        print(u'\nbinary.zip 生成成功')
+        print(u'\nbinary.zip 生成成功, 正在下载...')
         recv = requests.get(url + '/artifact/{}'.format(task_id), stream=True, cookies=auth)
         filename = re.findall('filename=\"(.+)\"', recv.headers['content-disposition'])[0]
 
         with open('{}/{}'.format(binary_zip_folder, filename), 'wb') as f:
             shutil.copyfileobj(recv.raw, f)
-    else:
 
+        print(u'binary.zip 下载成功')
+    else:
         print(u'\nbinary.zip 生成失败')
 
     print('\n--------------NEMO FARM--------------')
@@ -73,4 +75,4 @@ if __name__ == '__main__':
         print(traceback.format_exc())
         print(u'\n---------失败了！找TD看看吧---------\n')
 
-    print(u'\n请关闭窗口\n')
+    print(u'\n结束，请关闭窗口\n')
