@@ -114,7 +114,14 @@ class MenuObject(object):
         if cmds.menu(self.object_name, exists=True):
             cmds.deleteUI(self.object_name, menu=True)
 
-        if self.menu_type.lower()  == "menu":
+        print("--------------------")
+        print(self.menu_type)
+        print(self.object_name)
+        print(self.label)
+        print(self.menu_parent)
+        print("--------------------")
+
+        if self.menu_type.lower() == "menu":
             cmds.menu(self.object_name,
                       label=self.label,
                       parent=self.menu_parent,
@@ -127,7 +134,7 @@ class MenuObject(object):
                           parent=self.menu_parent,
                           tearOff=self.tearOff)
 
-        elif self.menu_type.lower()  == "menuitem":
+        elif self.menu_type.lower() == "menuitem":
             # ../maya_tools/tools/WTools/ANI --> maya_tools.tools.WTools.ANI.menu
             cmd = 'print(u"There is no command set for [%s]")' % self.label
 
@@ -171,6 +178,7 @@ def build_menu(menu_path=menu_path_root,
         f_path = os.path.join(menu_path, f).replace("\\", "/")
         if os.path.isdir(f_path):
             # menu_path = .../maya_tools/tools/WTools
+            print("f_path: ", f_path, menu_parent)
             menu_obj = MenuObject(f_path, menu_parent)
             menu_obj.create_menu()
 
