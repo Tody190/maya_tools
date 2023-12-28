@@ -9,7 +9,8 @@ description = 'Maya tools for maya'
 authors = ['YangTao']
 
 requires = [
-    'nemo'
+    'nemo',
+    'nemo_farm'
 ]
 
 
