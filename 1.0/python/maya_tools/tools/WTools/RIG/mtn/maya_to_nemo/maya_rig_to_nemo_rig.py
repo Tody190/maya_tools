@@ -103,7 +103,6 @@ def go():
 
     # check whether you can log in to the nemo farm
 
-
     if not os.path.exists(asset_info.nemo_root_path):
         os.makedirs(asset_info.nemo_root_path)  # make nemo file path
     if not os.path.exists(asset_info.nemo_data_path):
@@ -157,3 +156,12 @@ def go():
                  relative_path=True,
                  headless=False,
                  ctrl_proxy=False)
+
+    if os.path.isfile(asset_info.nemo_rig_file):
+        cmds.confirmDialog(title=u'Enjoy it!',
+                           message=u'转换完成，文件在\n{}'.format(asset_info.nemo_rig_file),
+                           icon='information')
+    else:
+        cmds.confirmDialog(title=u'失败',
+                           message=u'转换失败',
+                           icon='critical')
