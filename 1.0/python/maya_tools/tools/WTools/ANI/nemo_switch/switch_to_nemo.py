@@ -153,9 +153,10 @@ def switch():
 
     ref_node_list = []
     for n in sel_nodes:
-        ref_node = cmds.referenceQuery(n, referenceNode=1)
-        if ref_node not in ref_node_list:
-            ref_node_list.append(ref_node)
+        if cmds.referenceQuery(n, isNodeReferenced=1):
+            ref_node = cmds.referenceQuery(n, referenceNode=1)
+            if ref_node not in ref_node_list:
+                ref_node_list.append(ref_node)
 
     rig_assets_info = []
     for n in ref_node_list:
