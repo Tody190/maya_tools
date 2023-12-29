@@ -181,7 +181,6 @@ def switch():
 
         # add rows
         SwitchUI.INSTANCE.set_rig_assets(rig_assets_info)
-        SwitchUI.INSTANCE.set_table_cell_value(0, 0, '资产名')
         SwitchUI.INSTANCE.show()
 
 
