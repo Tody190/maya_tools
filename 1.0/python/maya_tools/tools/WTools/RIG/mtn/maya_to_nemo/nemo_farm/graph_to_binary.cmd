@@ -1,5 +1,5 @@
 @echo off
-call Y:\pipeline_studio\config\base_env_dev.bat
+call Y:\pipeline_studio\config\base_env.bat
 
 cd /d %~dp0
 
