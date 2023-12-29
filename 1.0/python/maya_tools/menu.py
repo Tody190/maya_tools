@@ -165,13 +165,9 @@ class MenuObject(object):
 
 
 def reload_menu():
-    for m in _loaded_modules.values():
-        try:
-            reload(m)
-        except Exception as e:
-            print(e)
-
-    build_menu()
+    for k, m in _loaded_modules.items():
+        print("Reload {%s}" % k)
+        reload(m)
 
     print("Menu has been reload !!!")
 
