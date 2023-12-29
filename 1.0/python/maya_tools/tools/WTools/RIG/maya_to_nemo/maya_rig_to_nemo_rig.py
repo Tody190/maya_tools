@@ -5,10 +5,6 @@
 # @File    : maya_rig_to_nemo_rig
 
 import os
-import requests
-import time
-import shutil
-import re
 
 import maya.cmds as cmds
 
