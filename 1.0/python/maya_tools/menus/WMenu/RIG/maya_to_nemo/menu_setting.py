@@ -9,12 +9,10 @@ menu_type = "menuItem"  # menu or submenu or menuItem
 
 label = u"Maya rig 转为 Nemo rig"
 
-# command = 'import {this_module}.maya_to_nemo.maya_rig_to_nemo_rig;'
-# command += 'reload({this_module}.maya_to_nemo.maya_rig_to_nemo_rig)'
-# command += '{this_module}.maya_to_nemo.maya_rig_to_nemo_rig.go()'
 
 def command():
-    execute('maya_rig_to_nemo_rig.go()')
+    execute('maya_tools.tools.maya_rig_to_nemo_rig.mtn.go()')
+
 
 def option_command():
     import os

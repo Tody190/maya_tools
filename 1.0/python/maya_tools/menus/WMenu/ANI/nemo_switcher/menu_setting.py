@@ -9,7 +9,7 @@ label = u"切换为 Nemo Rig"
 
 
 def command():
-    execute('switch_to_nemo.switch()')
+    execute('maya_tools.tools.nemo_switcher.switch()')
 
 
 def option_command():
